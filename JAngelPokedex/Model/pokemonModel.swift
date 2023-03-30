@@ -8,12 +8,13 @@
 import Foundation
 
 struct pokemonModelGetAll: Codable{
-    var next : String
+    var next : String?
     var results : [results]
 }
 struct results : Codable{
     var frontDefault : String?
     var name : String
+    var url : String?
 }
 
 // structs de getbyname
@@ -36,11 +37,22 @@ struct type : Codable{
     var name: String
 }
 struct stats : Codable{
-    var base_stat : Int
-    var stat : stat
+    var base_stat : Int?
+    var stat : stat?
 }
 struct stat : Codable{
-    var name : String
+    var name : String?
 }
 
+//getyallbytype
+struct pokemonbytype : Codable{
+    var pokemon : [pokemons]
+}
+struct pokemons : Codable{
+    var pokemon : pokemon
+}
+struct pokemon : Codable {
+    var name : String
+    var url : String
+}
 

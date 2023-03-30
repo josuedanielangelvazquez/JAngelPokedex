@@ -18,12 +18,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var textsearhc: UITextField!
     
     @IBOutlet weak var poketableview: UITableView!
+        var urlpokemonbycategorie = ""
+        var paginacion = 0
+        var pagina  = 0
         var objectspokemons = [pokemonModel]()
         var pokeObjects =  [results]()
          var tablecounts = 0
         let pokemonviewmodel = PokemonViewModel()
         var pokemoname = ""
         var busquedanormal = true
+        var busquedabycategoria = false
     override func viewDidLoad() {
         super.viewDidLoad()
         poketableview.register(UINib(nibName: "pokemonTableViewCell", bundle: .main), forCellReuseIdentifier: "pokecell")
@@ -40,6 +44,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
+  
    
     func alertmessage(){
         let alert = UIAlertController(title: nil, message: "no existen pokemones con ese nombre", preferredStyle: .alert)
@@ -64,10 +69,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
     }
-    func createarrayfetall(){
+    func loaddatabycategorie(){
         var pokeobj = [results]()
         var pokeresultss = [results]()
-        pokemonviewmodel.getall { Objectspokemons in
+        var pokeobjectsbytype = [pokemons]()
+        pokemonviewmodel.getallbytype(Type: urlpokemonbycategorie) { PokeoBJECTS in
+            DispatchQueue.main.async { [self] in
+                if PokeoBJECTS != nil{
+                    pokeobjectsbytype = PokeoBJECTS?.pokemon as! [pokemons]
+                    for pokeobjects in pokeobjectsbytype{
+                        pokemonviewmodel.getbyname(pokemon: pokeobjects.pokemon.name) { objectpoke in
+                            DispatchQueue.main.async {
+                                if objectpoke != nil{
+                                    var pokeresult = results(frontDefault: objectpoke?.sprites.front_default, name: objectpoke!.name)
+                                    pokeobj.append(pokeresult)
+                                }
+                                pokeObjects = pokeobj
+                                tablecounts = pokeObjects.count
+                                poketableview.reloadData()
+
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func createarrayfetall(pagina : Int){
+        var pokeobj = [results]()
+        var pokeresultss = [results]()
+        pokemonviewmodel.getall(paginacion: pagina) { Objectspokemons in
             DispatchQueue.main.async { [self] in
                 pokeresultss = Objectspokemons?.results as [results]
                 for pokeobject in pokeresultss{
@@ -103,14 +135,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         else{
-                createarrayfetall()
-
-
-            
+            if urlpokemonbycategorie == ""{
+                createarrayfetall(pagina: paginacion)
             }
-         
+            else{
+                loaddatabycategorie()
+            }
+            }
         }
-    
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -142,17 +174,46 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        busquedanormal = true
         textsearhc.text = nil
         if busquedanormal != true{
             pokemoname = objectspokemons[indexPath.row].name}
         else{
+            objectspokemons = [pokemonModel]()
             pokemoname = pokeObjects[indexPath.row].name
         }
+        busquedanormal = true
     performSegue(withIdentifier: "seguesdetail", sender: nil)
     }
     
+ 
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let translation = scrollView.panGestureRecognizer.translation(in: scrollView.superview)
+        if translation.y > 0 {
+            urlpokemonbycategorie = ""
+            if pagina == 0 {
+                busquedanormal = true
+               createarrayfetall(pagina: paginacion)
+           }
+
+            if pagina > 0{
+                pagina -= 1
+                paginacion -= 20
+                createarrayfetall(pagina: paginacion)
+                
+            }
+                    }
+        else {
+            if urlpokemonbycategorie == "" {
+                pagina += 1
+                
+                paginacion += 20
+                createarrayfetall(pagina: paginacion)
+            }
+        }
+    }
+
     @IBAction func searchAcvtion(_ sender: Any) {
+        objectspokemons = [pokemonModel]()
         busquedanormal = false
         loadData()
     }
@@ -160,6 +221,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if segue.identifier == "seguesdetail"{
             let detail = segue.destination as! DetailViewController
             detail.pokemonname = pokemoname
+            
         }
     }
 }

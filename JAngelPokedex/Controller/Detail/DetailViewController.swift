@@ -7,13 +7,14 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-    
-var pokemonname = ""
+class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UICollectionViewDataSource, UICollectionViewDelegate{
+ 
+    var pokemonname = ""
     var stacts = [stats]()
+    var types = [results]()
     var frontShiny = ""
     var frontNormal = ""
+    var url = ""
     var pokemonviewmodel = PokemonViewModel()
     @IBOutlet weak var spriteFrontalNormal: UIImageView!
     @IBOutlet weak var spriteFrontalShiny: UIImageView!
@@ -23,20 +24,37 @@ var pokemonname = ""
     @IBOutlet weak var tablestacks: UITableView!
     
     //detailcolors
+    @IBOutlet weak var typescollectionview: UICollectionView!
     
     @IBOutlet weak var ViewDetailColor1: UIView!
     @IBOutlet weak var ViewDetailColor2: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        typescollectionview.dataSource = self
+        typescollectionview.delegate = self
+        view.addSubview(typescollectionview)
         tablestacks.dataSource = self
         tablestacks.delegate = self
         view.addSubview(tablestacks)
         tablestacks.register(UINib(nibName: "DetailTableViewCell", bundle: .main), forCellReuseIdentifier: "statsdetailcel")
-
+        self.typescollectionview.register(UINib(nibName: "DetailCollectionViewCell", bundle: .main), forCellWithReuseIdentifier: "typecell")
             loaddatatableview()
+        loaddataCollectionView()
     }
-
+    func loaddataCollectionView(){
+        pokemonviewmodel.gettypes { [self] ObjectsType in
+            
+            DispatchQueue.main.async {
+                if ObjectsType != nil{
+                    types = ObjectsType?.results as [results]
+                    typescollectionview.reloadData()
+                }
+                print("Sin Elementos")
+            }
+           
+        }
+    }
     func loaddatatableview(){
         pokemonviewmodel.getbyname(pokemon: pokemonname) { ObjectPokemon in
             DispatchQueue.main.async { [self] in
@@ -46,12 +64,17 @@ var pokemonname = ""
                 let urlNormal = URL(string: frontNormal)
                 spriteFrontalNormal.image = UIImage(data: try! Data(contentsOf: urlNormal!))
                 spriteFrontalShiny.image = UIImage(data: try! Data(contentsOf: urlShiny!))
-                if ObjectPokemon != nil{}
-                stacts = ObjectPokemon!.stats as [stats]
-                namePokemon.text = ObjectPokemon!.name
-                Tipelbl.text = ObjectPokemon!.types[0].type.name
-                noPokemon.text = String(ObjectPokemon!.id)
-                tablestacks.reloadData()
+                if ObjectPokemon != nil{
+                    stacts = ObjectPokemon!.stats as [stats]
+                    var color = ObjectPokemon?.types[0].type.name
+                    self.ViewDetailColor1.backgroundColor = UIColor(named: color!)
+                    self.ViewDetailColor2.backgroundColor = UIColor(named: color!)?.withAlphaComponent(0.2)
+                    namePokemon.text = ObjectPokemon!.name
+                    Tipelbl.text = ObjectPokemon!.types[0].type.name
+                    noPokemon.text = String(ObjectPokemon!.id)
+                    tablestacks.reloadData()
+                }
+             
             }
         }
         
@@ -63,19 +86,34 @@ var pokemonname = ""
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "statsdetailcel", for: indexPath as! IndexPath) as! DetailTableViewCell
        
-        cell.namestatelbl.text = "\(stacts[indexPath.row].stat.name):"
-        cell.baseStatelbl.text = String(stacts[indexPath.row].base_stat)
+        cell.namestatelbl.text = "\(stacts[indexPath.row].stat!.name!):"
+        cell.baseStatelbl.text = String(stacts[indexPath.row].base_stat!)
         return cell
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        types.count
     }
-    */
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "typecell", for: indexPath as IndexPath) as! DetailCollectionViewCell
+        cell.typelbl.text = types[indexPath.row].name
+        cell.typeimage.image = UIImage(named: types[indexPath.row].name)
+        return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        url = types[indexPath.row].url!
+        dismiss(animated: true)
+        performSegue(withIdentifier: "seguespokemons", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "seguespokemons"{
+            let detail = segue.destination as! ViewController
+            detail.urlpokemonbycategorie = url
+        }
+    }
+
+    
 
 }
