@@ -6,18 +6,58 @@
 //
 
 import Foundation
+import UIKit
 class PokemonViewModel{
     
-    func getallbytype(Type : String, pokeobjects : @escaping(pokemonbytype?)->Void ){
-            let urlsession = URLSession.shared
-        let url = URL(string: Type)
-        urlsession.dataTask(with: url!){ [self] data, response, error in
-            if let safedata = data{
-                let json = parsejsonbytype(data: safedata)
-                pokeobjects(json)
+    private var task: URLSessionDataTask?
+
+   
+    func loadImageAsync(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil,
+                  let image = UIImage(data: data) else {
+                completion(nil)
+                return
             }
-        }.resume()
-        
+
+            completion(image)
+        }
+
+        task.resume()
+    }
+    func getallbytype(namecategorie : String,Type : String, pokeobjects : @escaping(pokemonbytype?)->Void ){
+        let urlsession = URLSession.shared
+        let url = URL(string: Type)
+        if url != nil{
+            urlsession.dataTask(with: url!){ [self] data, response, error in
+                if let safedata = data{
+                    let json = parsejsonbytype(data: safedata)
+                    pokeobjects(json)
+                }
+            }.resume()
+        }
+        else{
+            let url2 = URL(string: "https://pokeapi.co/api/v2/type/\(namecategorie)/")
+            if url2 != nil{
+                urlsession.dataTask(with: url2!){
+                    data, response, error in
+                    if let safedata = data{
+                        let json = self.parsejsonbytype(data: safedata)
+                        pokeobjects(json)
+                    }
+                }.resume()
+            }
+            else{
+                pokeobjects(nil)
+            }
+            
+        }
+      
     }
     func parsejsonbytype(data : Data)->pokemonbytype?{
         let decodable = JSONDecoder()

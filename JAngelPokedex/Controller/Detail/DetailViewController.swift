@@ -60,10 +60,18 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             DispatchQueue.main.async { [self] in
                 frontShiny = (ObjectPokemon!.sprites.front_shiny)
                 frontNormal = (ObjectPokemon!.sprites.front_default)
-                let urlShiny = URL(string: frontShiny)
-                let urlNormal = URL(string: frontNormal)
-                spriteFrontalNormal.image = UIImage(data: try! Data(contentsOf: urlNormal!))
-                spriteFrontalShiny.image = UIImage(data: try! Data(contentsOf: urlShiny!))
+             
+                pokemonviewmodel.loadImageAsync(from: frontNormal) { Objectimage in
+                    DispatchQueue.main.async { [self] in
+                        spriteFrontalNormal.image = Objectimage
+                        
+                    }
+                }
+                pokemonviewmodel.loadImageAsync(from: frontShiny) { Objectimage2 in
+                    DispatchQueue.main.async {
+                        spriteFrontalShiny.image = Objectimage2
+                    }
+                }
                 if ObjectPokemon != nil{
                     stacts = ObjectPokemon!.stats as [stats]
                     var color = ObjectPokemon?.types[0].type.name
@@ -110,6 +118,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "seguespokemons"{
             let detail = segue.destination as! ViewController
+            detail.tipobusqueda = "Categoria"
             detail.urlpokemonbycategorie = url
         }
     }

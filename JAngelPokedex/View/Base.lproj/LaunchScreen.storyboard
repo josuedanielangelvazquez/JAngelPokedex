@@ -1,8 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -11,15 +14,63 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokemon" translatesAutoresizingMaskIntoConstraints="NO" id="duk-gs-P2d">
+                                <rect key="frame" x="8" y="226" width="377" height="134"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="134" id="541-gq-Rop"/>
+                                    <constraint firstAttribute="width" constant="377" id="GpI-Uf-02b"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="134" id="f99-qx-K7c"/>
+                                </constraints>
+                            </imageView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="mua-53-BB2">
+                                <rect key="frame" x="143" y="492" width="106" height="74"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="106" id="6dv-2g-zvP"/>
+                                    <constraint firstAttribute="height" constant="74" id="FQP-dJ-Fn7"/>
+                                </constraints>
+                                <color key="color" name="dark"/>
+                            </activityIndicatorView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pokebola" translatesAutoresizingMaskIntoConstraints="NO" id="9gf-dr-0n2">
+                                <rect key="frame" x="43" y="436" width="306" height="186"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="186" id="0Tc-Ns-hfK"/>
+                                    <constraint firstAttribute="width" constant="306" id="ZWq-Gp-kwU"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="tintColor"/>
+                        <constraints>
+                            <constraint firstItem="duk-gs-P2d" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="2Wf-VK-T1I"/>
+                            <constraint firstItem="mua-53-BB2" firstAttribute="top" secondItem="duk-gs-P2d" secondAttribute="bottom" constant="132" id="6WO-Hh-o8i"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="mua-53-BB2" secondAttribute="trailing" constant="144" id="DP4-lW-3DN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="duk-gs-P2d" secondAttribute="trailing" constant="8" id="FLL-aL-Jis"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="9gf-dr-0n2" secondAttribute="bottom" constant="196" id="Fx9-eD-CMN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9gf-dr-0n2" secondAttribute="trailing" constant="44" id="FyR-MI-VSI"/>
+                            <constraint firstItem="mua-53-BB2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="143" id="Kqb-Xo-B7z"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="mua-53-BB2" secondAttribute="bottom" constant="252" id="SUL-mU-8My"/>
+                            <constraint firstItem="9gf-dr-0n2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="43" id="bKD-xO-adS"/>
+                            <constraint firstItem="duk-gs-P2d" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="167" id="hY0-tp-HWX"/>
+                            <constraint firstItem="9gf-dr-0n2" firstAttribute="top" secondItem="duk-gs-P2d" secondAttribute="bottom" constant="76" id="icE-Ae-mBT"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.671755725190835" y="374.64788732394368"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="pokebola" width="512" height="512"/>
+        <image name="pokemon" width="2560" height="942"/>
+        <namedColor name="dark">
+            <color red="0.030000001192092896" green="0.018999999389052391" blue="0.0050000008195638657" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="tintColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>
