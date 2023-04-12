@@ -11,10 +11,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
  
     var pokemonname = ""
     var stacts = [stats]()
-    var types = [results]()
+    var Types = [results]()
     var frontShiny = ""
     var frontNormal = ""
     var url = ""
+    var modeltypes = [types]()
     var pokemonviewmodel = PokemonViewModel()
     @IBOutlet weak var spriteFrontalNormal: UIImageView!
     @IBOutlet weak var spriteFrontalShiny: UIImageView!
@@ -47,8 +48,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             DispatchQueue.main.async {
                 if ObjectsType != nil{
-                    types = ObjectsType?.results as [results]
-                    typescollectionview.reloadData()
+                    Types = ObjectsType?.results as [results]
+                    
                 }
                 print("Sin Elementos")
             }
@@ -74,13 +75,17 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }
                 if ObjectPokemon != nil{
                     stacts = ObjectPokemon!.stats as [stats]
+                    
+                    modeltypes = ObjectPokemon?.types as [types]
+                    print(modeltypes)
                     var color = ObjectPokemon?.types[0].type.name
                     self.ViewDetailColor1.backgroundColor = UIColor(named: color!)
                     self.ViewDetailColor2.backgroundColor = UIColor(named: color!)?.withAlphaComponent(0.2)
                     namePokemon.text = ObjectPokemon!.name
-                    Tipelbl.text = ObjectPokemon!.types[0].type.name
                     noPokemon.text = String(ObjectPokemon!.id)
                     tablestacks.reloadData()
+                    typescollectionview.reloadData()
+
                 }
              
             }
@@ -100,17 +105,17 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        types.count
+        modeltypes.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "typecell", for: indexPath as IndexPath) as! DetailCollectionViewCell
-        cell.typelbl.text = types[indexPath.row].name
-        cell.typeimage.image = UIImage(named: types[indexPath.row].name)
+        cell.typelbl.text = modeltypes[indexPath.row].type.name
+        cell.typeimage.image = UIImage(named: modeltypes[indexPath.row].type.name)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        url = types[indexPath.row].url!
+        url = Types[indexPath.row].url!
         dismiss(animated: true)
         performSegue(withIdentifier: "seguespokemons", sender: nil)
     }

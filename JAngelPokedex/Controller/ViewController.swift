@@ -28,7 +28,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         var paginacion = 0
         var pagina  = 0
         var objectspokemons = [pokemonModel]()
-        var pokeObjects =  [results]()
+        var pokeObjects =  [results]?(nil)
          var tablecounts = 0
         let pokemonviewmodel = PokemonViewModel()
         var pokemoname = ""
@@ -49,6 +49,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        pokeObjects =  [results]?(nil)
             loadData()
         
     }
@@ -66,7 +67,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }}
         else if tipobusqueda == "Nombre" || tipobusqueda == "Categoria"{
             if textField == textsearhc{
-                let allowingChars = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ abcdefghijklmnñopqrstuvwxyz"
+                let allowingChars = "abcdefghijklmnñopqrstuvwxyz"
                 let numberOnly = NSCharacterSet.init(charactersIn: allowingChars).inverted
                 let validString = string.rangeOfCharacter(from: numberOnly) == nil
                 return validString
@@ -144,12 +145,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     pokeobjectsbytype = PokeoBJECTS?.pokemon as! [pokemons]
                     for pokeobjects in pokeobjectsbytype{
                         pokemonviewmodel.getbyname(pokemon: pokeobjects.pokemon.name) { objectpoke in
-                            DispatchQueue.main.async {
+                            DispatchQueue.main.async { [self] in
                                 if objectpoke?.name != nil, objectpoke?.sprites.front_default != nil{
                                     var pokeresult = results(frontDefault: objectpoke?.sprites.front_default, name: objectpoke!.name)
                                     pokeobj.append(pokeresult)
                                     pokeObjects = pokeobj
-                                    tablecounts = pokeObjects.count
+                                    tablecounts = pokeObjects!.count
                                     poketableview.reloadData()
                                 }
                                 else {
@@ -188,19 +189,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     }
     func createarrayfetall(pagina : Int){
+        pokeObjects =  [results]?(nil)
         var pokeobj = [results]()
-        var pokeresultss = [results]()
+        var pokeresultss = [results]?(nil)
         pokemonviewmodel.getall(paginacion: pagina) { Objectspokemons in
             DispatchQueue.main.async { [self] in
                 pokeresultss = Objectspokemons?.results as [results]
-                for pokeobject in pokeresultss{
+                print(pokeresultss)
+                for pokeobject in pokeresultss!{
                     pokemonviewmodel.getbyname(pokemon: pokeobject.name) { objectpoke in
-                        DispatchQueue.main.async {
-                            var pokeresult = results(frontDefault: objectpoke?.sprites.front_default, name: pokeobject.name)
+                        DispatchQueue.main.sync { [self] in
+                            var pokeresult = results( id: pokeobject.id, frontDefault: objectpoke?.sprites.front_default, name: pokeobject.name, url: pokeobject.url)
                             pokeobj.append(pokeresult)
                             
                             pokeObjects = pokeobj
-                            tablecounts = pokeObjects.count
+                            tablecounts = pokeObjects!.count
 
                             poketableview.reloadData()
 
@@ -262,9 +265,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return cell}
         else{
 ////
-            cell.pokemonname.text = pokeObjects[indexPath.row].name
+            cell.pokemonname.text = pokeObjects![indexPath.row].name
             cell.prepareForReuse()
-            cell.sprites.sd_setImage(with: URL(string: pokeObjects[indexPath.row].frontDefault!))
+            cell.sprites.sd_setImage(with: URL(string: pokeObjects![indexPath.row].frontDefault!))
 //
            return cell
         }
@@ -275,7 +278,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             pokemoname = objectspokemons[indexPath.row].name}
         else{
             objectspokemons = [pokemonModel]()
-            pokemoname = pokeObjects[indexPath.row].name
+            pokemoname = pokeObjects![indexPath.row].name
         }
         busquedanormal = true
     performSegue(withIdentifier: "seguesdetail", sender: nil)

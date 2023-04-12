@@ -12,6 +12,7 @@ struct pokemonModelGetAll: Codable{
     var results : [results]
 }
 struct results : Codable{
+    var id: Int?
     var frontDefault : String?
     var name : String
     var url : String?
