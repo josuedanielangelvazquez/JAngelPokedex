@@ -17,11 +17,13 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var url = ""
     var modeltypes = [types]()
     var pokemonviewmodel = PokemonViewModel()
+    
+    @IBOutlet weak var Viewdate: UIView!
+    
     @IBOutlet weak var spriteFrontalNormal: UIImageView!
     @IBOutlet weak var spriteFrontalShiny: UIImageView!
     @IBOutlet weak var namePokemon: UILabel!
     @IBOutlet weak var noPokemon: UILabel!
-    @IBOutlet weak var Tipelbl: UILabel!
     @IBOutlet weak var tablestacks: UITableView!
     
     //detailcolors
@@ -32,6 +34,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        Viewdate.layer.cornerRadius = 40
         typescollectionview.dataSource = self
         typescollectionview.delegate = self
         view.addSubview(typescollectionview)
